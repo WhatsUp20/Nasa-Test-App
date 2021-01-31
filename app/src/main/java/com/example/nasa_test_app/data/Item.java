@@ -8,7 +8,7 @@ import java.util.List;
 public class Item {
     @SerializedName("data")
     @Expose
-    private List<Datum> data = null;
+    private List<Datum> data;
     @SerializedName("links")
     @Expose
     private List<Link> links = null;

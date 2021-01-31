@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nasa_test_app.adapter.NasaAdapter;
@@ -15,6 +16,7 @@ import com.example.nasa_test_app.data.Datum;
 import com.example.nasa_test_app.data.Item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,12 +31,16 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NasaAdapter adapter;
     private CompositeDisposable compositeDisposable;
+    private TextView textView;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
         adapter = new NasaAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,10 +61,11 @@ public class MainActivity extends AppCompatActivity {
                         if (throwable != null) {
                             Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
-                            adapter.setDatumList(collectionNasa.getItems().listIterator().next().getData());
+                            adapter.setDatumList(collectionNasa.getItems().get(0).getData());
                         }
                     }
                 });
+        compositeDisposable.add(disposable);
 
     }
 
