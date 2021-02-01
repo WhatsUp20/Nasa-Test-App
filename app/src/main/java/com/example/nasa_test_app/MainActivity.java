@@ -14,6 +14,7 @@ import com.example.nasa_test_app.api.NetworkService;
 import com.example.nasa_test_app.data.CollectionNasa;
 import com.example.nasa_test_app.data.Datum;
 import com.example.nasa_test_app.data.Item;
+import com.example.nasa_test_app.data.ObjectCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,16 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NasaAdapter adapter;
     private CompositeDisposable compositeDisposable;
-    private TextView textView;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
         adapter = new NasaAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
         Disposable disposable = api.getAllCollections()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BiConsumer<CollectionNasa, Throwable>() {
+                .subscribe(new BiConsumer<ObjectCollection, Throwable>() {
                     @Override
-                    public void accept(CollectionNasa collectionNasa, Throwable throwable) throws Exception {
+                    public void accept(ObjectCollection objectCollection, Throwable throwable) throws Exception {
                         if (throwable != null) {
                             Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
-                            adapter.setDatumList(collectionNasa.getItems().get(0).getData());
+                            adapter.setDatumList(objectCollection.getCollection().getItems().get(0).getData());
                         }
                     }
                 });

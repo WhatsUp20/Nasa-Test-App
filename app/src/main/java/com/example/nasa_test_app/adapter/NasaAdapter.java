@@ -3,6 +3,7 @@ package com.example.nasa_test_app.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.nasa_test_app.R;
 import com.example.nasa_test_app.data.CollectionNasa;
 import com.example.nasa_test_app.data.Datum;
+import com.example.nasa_test_app.data.Link;
 
 
 import java.util.ArrayList;
@@ -45,14 +47,14 @@ public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder
 
     class NasaViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textViewTitle;
+        TextView textView;
 
         public NasaViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewTitle = itemView.findViewById(R.id.textViewTitle);
+            textView = itemView.findViewById(R.id.textView);
         }
         void bind(Datum datum) {
-            textViewTitle.setText((datum.getTitle()));
+            textView.setText(datum.getTitle());
         }
     }
 }
