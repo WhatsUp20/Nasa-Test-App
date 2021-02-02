@@ -4,14 +4,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nasa_test_app.R;
-import com.example.nasa_test_app.data.Datum;
-import com.example.nasa_test_app.data.Item;
 import com.example.nasa_test_app.data.Link;
 import com.squareup.picasso.Picasso;
 
@@ -21,9 +18,10 @@ import java.util.List;
 public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder> {
 
     private List<Link> linkList = new ArrayList<>();
+
     private OnImageClickListener onImageClickListener;
 
-    public void setDatumList(List<Link> linkList) {
+    public void setLinkList(List<Link> linkList) {
         this.linkList = linkList;
         notifyDataSetChanged();
     }
@@ -65,6 +63,8 @@ public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder
         public NasaViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,5 +74,6 @@ public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder
                 }
             });
         }
+
     }
 }
