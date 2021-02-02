@@ -1,30 +1,30 @@
 package com.example.nasa_test_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.DisplayMetrics;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.nasa_test_app.adapter.NasaAdapter;
 import com.example.nasa_test_app.api.NetworkApi;
 import com.example.nasa_test_app.api.NetworkService;
-import com.example.nasa_test_app.data.CollectionNasa;
-import com.example.nasa_test_app.data.Datum;
 import com.example.nasa_test_app.data.Item;
-import com.example.nasa_test_app.data.ObjectCollection;
+import com.example.nasa_test_app.data.Link;
+
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NasaAdapter adapter;
     private CompositeDisposable compositeDisposable;
+
+    private int getColumnCount() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
+        return Math.max(width / 185, 2);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +58,31 @@ public class MainActivity extends AppCompatActivity {
         Disposable disposable = api.getAllCollections()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BiConsumer<ObjectCollection, Throwable>() {
-                    @Override
-                    public void accept(ObjectCollection objectCollection, Throwable throwable) throws Exception {
-                        if (throwable != null) {
-                            Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            adapter.setDatumList(objectCollection.getCollection().getItems().get(0).getData());
+                .subscribe((objectCollection, throwable) -> {
+                    if (throwable != null) {
+                        Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        List<Item> items = objectCollection.getCollection().getItems();
+                        List<List<Link>> items1 = new ArrayList<>();
+                        List<Link> linkList = new ArrayList<>();
+
+                        for(int i = 0;i < items.size();i++) {
+                            items1.add(objectCollection.getCollection().getItems().get(i).getLinks());
                         }
+                        for (int i = 0;i < items1.size(); i++) {
+                            List<Link> links = items1.get(i);
+                            linkList.addAll(links);
+                        }
+                        adapter.setDatumList(linkList);
+                        adapter.setOnImageClickListener(position -> {
+                            Link link = adapter.getLinkList().get(position);
+                            Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
+                            intent.putExtra("id",link.getHref());
+                            startActivity(intent);
+                        });
                     }
                 });
         compositeDisposable.add(disposable);
-
     }
 
     @Override
