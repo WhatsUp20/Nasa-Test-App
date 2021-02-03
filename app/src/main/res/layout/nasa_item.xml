@@ -5,9 +5,16 @@
         android:layout_marginBottom="6dp">
 
     <TextView
-        android:id="@+id/description0"
+        android:id="@+id/descriptionToDetail"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/titleToDetail"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <ImageView
         android:id="@+id/imageView"

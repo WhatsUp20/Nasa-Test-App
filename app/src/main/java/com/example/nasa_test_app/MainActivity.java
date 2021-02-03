@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.nasa_test_app.adapter.NasaAdapter;
 import com.example.nasa_test_app.api.NetworkApi;
 import com.example.nasa_test_app.api.NetworkService;
+import com.example.nasa_test_app.data.Datum;
 import com.example.nasa_test_app.data.Item;
 import com.example.nasa_test_app.data.Link;
 
@@ -51,24 +52,38 @@ public class MainActivity extends AppCompatActivity {
                     if (throwable != null) {
                         Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        List<Item> items = objectCollection.getCollection().getItems();
-                        List<List<Link>> items1 = new ArrayList<>();
+                        //Get All lists
+                        List<List<Link>> link = new ArrayList<>();
                         List<Link> linkList = new ArrayList<>();
+                        List<List<Datum>> datum = new ArrayList<>();
+                        List<Datum> datumList = new ArrayList<>();
+                        List<Item> items = objectCollection.getCollection().getItems();
 
+                        //Fill link and datum lists data from item list
                         for(int i = 0;i < items.size();i++) {
-                            items1.add(objectCollection.getCollection().getItems().get(i).getLinks());
+                            link.add(objectCollection.getCollection().getItems().get(i).getLinks());
+                            datum.add(objectCollection.getCollection().getItems().get(i).getData());
                         }
-                        for (int i = 0;i < items1.size(); i++) {
-                            List<Link> links = items1.get(i);
+                        //Get and add all dates to linkList
+                        for (int i = 0;i < link.size(); i++) {
+                            List<Link> links = link.get(i);
                             linkList.addAll(links);
                         }
+                        //Get and add all dates to datumList
+                        for (int i = 0;i < datum.size();i++) {
+                            List<Datum> datumList1 = datum.get(i);
+                            datumList.addAll(datumList1);
+                        }
                         adapter.setLinkList(linkList);
+                        adapter.setDatumList(datumList);
 
                         adapter.setOnImageClickListener(position -> {
-                            Link link = adapter.getLinkList().get(position);
-
+                            Link link1 = adapter.getLinkList().get(position);
+                            Datum datum1 = adapter.getDatumList().get(position);
                             Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
-                            intent.putExtra("image",link.getHref());
+                            intent.putExtra("image",link1.getHref());
+                            intent.putExtra("title",datum1.getTitle());
+                            intent.putExtra("desc",datum1.getDescription());
                             startActivity(intent);
                         });
                     }
