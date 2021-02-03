@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:background="@color/colorPrimaryDark"
     tools:ignore="UseSwitchCompatOrMaterialXml">
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchNasa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -24,25 +25,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switch1" />
+        app:layout_constraintTop_toBottomOf="@id/switchNasa" />
 
     <TextView
-        android:id="@+id/textViewImages"
+        android:id="@+id/textViewSpace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_view_space"
-        app:layout_constraintEnd_toStartOf="@+id/switch1"
+        android:onClick="setSpace"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/switchNasa"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/switch1" />
+        app:layout_constraintTop_toTopOf="@+id/switchNasa" />
 
     <TextView
-        android:id="@+id/textViewVideos"
+        android:id="@+id/textViewMars"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_view_mars"
+        android:onClick="setMars"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toTopOf="@+id/switch1" />
+        app:layout_constraintStart_toEndOf="@+id/switchNasa"
+        app:layout_constraintTop_toTopOf="@+id/switchNasa" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
