@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NasaSpaceAdapter extends RecyclerView.Adapter<NasaSpaceAdapter.NasaViewHolder> {
+public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder> {
 
     private List<Link> linkList = new ArrayList<>();
     private List<Datum> datumList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class NasaSpaceAdapter extends RecyclerView.Adapter<NasaSpaceAdapter.Nasa
     @NonNull
     @Override
     public NasaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nasa_space_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nasa_item, parent, false);
         return new NasaViewHolder(view);
     }
 

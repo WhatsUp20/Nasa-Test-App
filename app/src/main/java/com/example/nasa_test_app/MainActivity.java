@@ -4,14 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.nasa_test_app.adapter.NasaSpaceAdapter;
-import com.example.nasa_test_app.adapter.NasaMarsAdapter;
+import com.example.nasa_test_app.adapter.NasaAdapter;
 import com.example.nasa_test_app.api.NetworkApi;
 import com.example.nasa_test_app.api.NetworkService;
 import com.example.nasa_test_app.data.Datum;
@@ -31,17 +31,17 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NasaSpaceAdapter adapterPhoto;
-    private NasaMarsAdapter adapterVideo;
+    private NasaAdapter adapter;
     private CompositeDisposable compositeDisposable;
-    private static RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Switch switch1 = findViewById(R.id.switch1);
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        adapter = new NasaAdapter();
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         switch1.setChecked(true);
@@ -58,6 +58,18 @@ public class MainActivity extends AppCompatActivity {
         switch1.setChecked(false);
     }
 
+    private void imageClickListener() {
+        adapter.setOnImageClickListener(position -> {
+            Link link1 = adapter.getLinkList().get(position);
+            Datum datum1 = adapter.getDatumList().get(position);
+            Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
+            intent.putExtra("content", link1.getHref());
+            intent.putExtra("title", datum1.getTitle());
+            intent.putExtra("desc", datum1.getDescription());
+            MainActivity.this.startActivity(intent);
+        });
+    }
+
     private void loadSpaceData() {
         compositeDisposable = new CompositeDisposable();
         NetworkService service = NetworkService.getInstance();
@@ -71,12 +83,10 @@ public class MainActivity extends AppCompatActivity {
                         if (throwable != null) {
                             Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
-                            adapterPhoto = new NasaSpaceAdapter();
-                            recyclerView.setAdapter(adapterPhoto);
                             //Get All lists
                             List<List<Link>> link = new ArrayList<>();
-                            List<Link> linkList = new ArrayList<>();
                             List<List<Datum>> datum = new ArrayList<>();
+                            List<Link> linkList = new ArrayList<>();
                             List<Datum> datumList = new ArrayList<>();
                             List<Item> items = objectCollection.getCollection().getItems();
 
@@ -95,18 +105,10 @@ public class MainActivity extends AppCompatActivity {
                                 List<Datum> datumList1 = datum.get(i);
                                 datumList.addAll(datumList1);
                             }
-                            adapterPhoto.setLinkList(linkList);
-                            adapterPhoto.setDatumList(datumList);
+                            adapter.setLinkList(linkList);
+                            adapter.setDatumList(datumList);
 
-                            adapterPhoto.setOnImageClickListener(position -> {
-                                Link link1 = adapterPhoto.getLinkList().get(position);
-                                Datum datum1 = adapterPhoto.getDatumList().get(position);
-                                Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
-                                intent.putExtra("content", link1.getHref());
-                                intent.putExtra("title", datum1.getTitle());
-                                intent.putExtra("desc", datum1.getDescription());
-                                MainActivity.this.startActivity(intent);
-                            });
+                           imageClickListener();
                         }
                     }
                 });
@@ -126,14 +128,10 @@ public class MainActivity extends AppCompatActivity {
                         if (throwable != null) {
                             Toast.makeText(MainActivity.this, "Data loading error " + throwable, Toast.LENGTH_SHORT).show();
                         } else {
-                            adapterVideo = new NasaMarsAdapter();
-                            recyclerView.setAdapter(adapterVideo);
-//                            adapterPhoto = new NasaAdapter();
-//                            recyclerView.setAdapter(adapterPhoto);
-
+                            //Get All lists
                             List<List<Link>> link = new ArrayList<>();
-                            List<Link> linkList = new ArrayList<>();
                             List<List<Datum>> datum = new ArrayList<>();
+                            List<Link> linkList = new ArrayList<>();
                             List<Datum> datumList = new ArrayList<>();
                             List<Item> items = objectCollection.getCollection().getItems();
 
@@ -152,19 +150,10 @@ public class MainActivity extends AppCompatActivity {
                                 List<Datum> datumList1 = datum.get(i);
                                 datumList.addAll(datumList1);
                             }
-                            adapterVideo.setLinkList2(linkList);
-                            adapterVideo.setDatumList2(datumList);
+                            adapter.setLinkList(linkList);
+                            adapter.setDatumList(datumList);
 
-                            adapterVideo.setOnImageClickListener2(position -> {
-                                Link link1 = adapterVideo.getLinkList2().get(position);
-                                Datum datum1 = adapterVideo.getDatumList2().get(position);
-                                Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
-                                intent.putExtra("content", link1.getHref());
-                                intent.putExtra("title", datum1.getTitle());
-                                intent.putExtra("desc", datum1.getDescription());
-                                MainActivity.this.startActivity(intent);
-                            });
-
+                            imageClickListener();
                         }
                     }
                 });
