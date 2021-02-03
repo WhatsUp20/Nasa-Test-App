@@ -1,4 +1,4 @@
-package com.example.nasa_test_app;
+package com.example.nasa_test_app.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.nasa_test_app.R;
 import com.squareup.picasso.Picasso;
 
 public class NasaDetailActivity extends AppCompatActivity {
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

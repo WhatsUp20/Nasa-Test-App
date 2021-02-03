@@ -1,4 +1,4 @@
-package com.example.nasa_test_app;
+package com.example.nasa_test_app.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.nasa_test_app.R;
 import com.example.nasa_test_app.adapter.NasaAdapter;
 import com.example.nasa_test_app.api.NetworkApi;
 import com.example.nasa_test_app.api.NetworkService;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         switchNasa.setChecked(true);
     }
 
-    private void imageClickListener() {
+    void imageClickListener() {
         adapter.setOnImageClickListener(position -> {
             Link link1 = adapter.getLinkList().get(position);
             Datum datum1 = adapter.getDatumList().get(position);
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void loadSpaceData() {
+    void loadSpaceData() {
         compositeDisposable = new CompositeDisposable();
         NetworkService service = NetworkService.getInstance();
         final NetworkApi api = service.getAllApi();
@@ -124,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
                         adapter.setLinkList(linkList);
                         adapter.setDatumList(datumList);
 
-                       imageClickListener();
+                        imageClickListener();
                     }
                 });
         compositeDisposable.add(disposable);
     }
 
-    private void loadMarsData() {
+    void loadMarsData() {
         compositeDisposable = new CompositeDisposable();
         NetworkService service = NetworkService.getInstance();
         final NetworkApi api = service.getAllApi();
