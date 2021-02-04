@@ -1,7 +1,5 @@
 package com.example.nasa_test_app.data;
 
-import android.content.ClipData;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
