@@ -5,7 +5,9 @@ import com.example.nasa_test_app.data.Link;
 
 import java.util.List;
 
-public interface NasaView {
+public interface NasaContract {
     void showDatumDataFromPresenter(List<Datum> datumList);
     void showListDataFromPresenter(List<Link> linkList);
+    void showProgressBar();
+    void notShowProgressBar();
 }

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.nasa_test_app.R;
@@ -21,13 +23,13 @@ import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_DESCRIP
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_IMAGE;
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_TITLE;
 
-public class MainActivity extends AppCompatActivity implements NasaView {
+public class MainActivity extends AppCompatActivity implements NasaContract {
 
     private TextView textViewSpaceNews;
     private TextView textViewMarsNews;
     private NasaAdapter adapter;
-    private RecyclerView recyclerView;
     private SwitchCompat switchNasa;
+    private ProgressBar progressBarLoading;
     private NasaPresenter presenter;
 
     @Override
@@ -35,9 +37,6 @@ public class MainActivity extends AppCompatActivity implements NasaView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         switchNasa.setChecked(true);
         switchNasa.setOnCheckedChangeListener((buttonView, isChecked) -> updateSwitchState(isChecked));
@@ -52,15 +51,6 @@ public class MainActivity extends AppCompatActivity implements NasaView {
             updateSwitchState(false);
             switchNasa.setChecked(false);
         });
-    }
-
-    private void init() {
-        textViewSpaceNews = findViewById(R.id.textViewSpace);
-        textViewMarsNews = findViewById(R.id.textViewMars);
-        switchNasa = findViewById(R.id.switchNasa);
-        recyclerView = findViewById(R.id.recyclerView);
-        adapter = new NasaAdapter();
-        presenter = new NasaPresenter(this);
     }
 
     private void updateSwitchState(boolean isMarsSelected) {
@@ -89,6 +79,18 @@ public class MainActivity extends AppCompatActivity implements NasaView {
         });
     }
 
+    private void init() {
+        textViewSpaceNews = findViewById(R.id.textViewSpace);
+        textViewMarsNews = findViewById(R.id.textViewMars);
+        switchNasa = findViewById(R.id.switchNasa);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        progressBarLoading = findViewById(R.id.progressBarLoading);
+        adapter = new NasaAdapter();
+        presenter = new NasaPresenter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
     @Override
     public void showDatumDataFromPresenter(List<Datum> datumList) {
         adapter.setDatumList(datumList);
@@ -97,6 +99,16 @@ public class MainActivity extends AppCompatActivity implements NasaView {
     @Override
     public void showListDataFromPresenter(List<Link> linkList) {
         adapter.setLinkList(linkList);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBarLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void notShowProgressBar() {
+        progressBarLoading.setVisibility(View.INVISIBLE);
     }
 
     @Override

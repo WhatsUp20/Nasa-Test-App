@@ -3,4 +3,6 @@
     <string name="images_from_nasa">Images From Nasa</string>
     <string name="text_view_space">Space News</string>
     <string name="text_view_mars">Mars News</string>
+    <string name="text_view_description">textViewDescription</string>
+    <string name="text_view_title">textViewTitle</string>
 </resources>

@@ -21,9 +21,9 @@ import io.reactivex.schedulers.Schedulers;
 public class NasaPresenter {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private NasaView view;
+    private NasaContract view;
 
-    public NasaPresenter(NasaView view) {
+    public NasaPresenter(NasaContract view) {
         this.view = view;
     }
 
@@ -34,11 +34,12 @@ public class NasaPresenter {
         Disposable disposable = api.getAllSpaceCollections()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable1 -> view.showProgressBar())
+                .doFinally(() -> view.notShowProgressBar())
                 .subscribe((objectCollection, throwable) -> {
                     if (throwable != null) {
                         Toast.makeText((Context) view, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-
                         callToGetAllDataFromLists(objectCollection);
                     }
                 });
@@ -51,6 +52,8 @@ public class NasaPresenter {
         Disposable disposable = api.getAllMarsCollection()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable1 -> view.showProgressBar())
+                .doFinally(() -> view.notShowProgressBar())
                 .subscribe((objectCollection, throwable) -> {
                     if (throwable != null) {
                         Toast.makeText((Context) view, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
