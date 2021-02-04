@@ -1,14 +1,12 @@
 package com.example.nasa_test_app.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +17,7 @@ import com.example.nasa_test_app.api.NetworkService;
 import com.example.nasa_test_app.data.Datum;
 import com.example.nasa_test_app.data.Item;
 import com.example.nasa_test_app.data.Link;
+import com.example.nasa_test_app.data.ObjectCollection;
 
 import java.util.ArrayList;
 
@@ -29,68 +28,77 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_DESCRIPTION;
+import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_IMAGE;
+import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_TITLE;
+
 public class MainActivity extends AppCompatActivity {
 
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private TextView textViewSpaceNews;
+    private TextView textViewMarsNews;
     private NasaAdapter adapter;
-    private CompositeDisposable compositeDisposable;
-    private TextView textViewSpace;
-    private TextView textViewMars;
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch switchNasa;
+    private RecyclerView recyclerView;
+    private SwitchCompat switchNasa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textViewSpace = findViewById(R.id.textViewSpace);
-        textViewMars = findViewById(R.id.textViewMars);
-        switchNasa = findViewById(R.id.switchNasa);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        adapter = new NasaAdapter();
+        init();
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         switchNasa.setChecked(true);
-        switchNasa.setOnCheckedChangeListener((buttonView, isChecked) -> methodOfSwitch(isChecked));
+        switchNasa.setOnCheckedChangeListener((buttonView, isChecked) -> updateSwitchState(isChecked));
         switchNasa.setChecked(false);
+
+        textViewMarsNews.setOnClickListener(v -> {
+            updateSwitchState(true);
+            switchNasa.setChecked(true);
+        });
+
+        textViewSpaceNews.setOnClickListener(v -> {
+            updateSwitchState(false);
+            switchNasa.setChecked(false);
+        });
     }
 
-    private void methodOfSwitch(boolean isMars) {
-        if (isMars) {
+    private void init() {
+        textViewSpaceNews = findViewById(R.id.textViewSpace);
+        textViewMarsNews = findViewById(R.id.textViewMars);
+        switchNasa = findViewById(R.id.switchNasa);
+        recyclerView = findViewById(R.id.recyclerView);
+        adapter = new NasaAdapter();
+    }
+
+    private void updateSwitchState(boolean isMarsSelected) {
+        if (isMarsSelected) {
             loadMarsData();
-            textViewMars.setTextColor(getResources().getColor(R.color.colorAccent));
-            textViewSpace.setTextColor(getResources().getColor(R.color.colorWhite));
+            textViewMarsNews.setTextColor(getResources().getColor(R.color.colorAccent));
+            textViewSpaceNews.setTextColor(getResources().getColor(R.color.colorWhite));
         } else {
             loadSpaceData();
-            textViewMars.setTextColor(getResources().getColor(R.color.colorWhite));
-            textViewSpace.setTextColor(getResources().getColor(R.color.colorAccent));
+            textViewMarsNews.setTextColor(getResources().getColor(R.color.colorWhite));
+            textViewSpaceNews.setTextColor(getResources().getColor(R.color.colorAccent));
         }
     }
 
-    public void setSpace(View view) {
-        methodOfSwitch(false);
-        switchNasa.setChecked(false);
-    }
-
-    public void setMars(View view) {
-        methodOfSwitch(true);
-        switchNasa.setChecked(true);
-    }
-
-    void imageClickListener() {
+    private void setImageClickListener() {
         adapter.setOnImageClickListener(position -> {
             Link link1 = adapter.getLinkList().get(position);
             Datum datum1 = adapter.getDatumList().get(position);
             Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
-            intent.putExtra("image", link1.getHref());
-            intent.putExtra("title", datum1.getTitle());
-            intent.putExtra("desc", datum1.getDescription());
+            intent.putExtra(EXTRA_IMAGE, link1.getHref());
+            intent.putExtra(EXTRA_TITLE, datum1.getTitle());
+            intent.putExtra(EXTRA_DESCRIPTION, datum1.getDescription());
             MainActivity.this.startActivity(intent);
         });
     }
 
-    void loadSpaceData() {
-        compositeDisposable = new CompositeDisposable();
+    private void loadSpaceData() {
+
         NetworkService service = NetworkService.getInstance();
         final NetworkApi api = service.getAllApi();
         Disposable disposable = api.getAllSpaceCollections()
@@ -100,39 +108,13 @@ public class MainActivity extends AppCompatActivity {
                     if (throwable != null) {
                         Toast.makeText(MainActivity.this, "Data loading error " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        //Get All lists
-                        List<List<Link>> link = new ArrayList<>();
-                        List<List<Datum>> datum = new ArrayList<>();
-                        List<Link> linkList = new ArrayList<>();
-                        List<Datum> datumList = new ArrayList<>();
-                        List<Item> items = objectCollection.getCollection().getItems();
-
-                        //Fill link and datum lists data from item list
-                        for (int i = 0; i < items.size(); i++) {
-                            link.add(objectCollection.getCollection().getItems().get(i).getLinks());
-                            datum.add(objectCollection.getCollection().getItems().get(i).getData());
-                        }
-                        //Get and add all dates to linkList
-                        for (int i = 0; i < link.size(); i++) {
-                            List<Link> links = link.get(i);
-                            linkList.addAll(links);
-                        }
-                        //Get and add all dates to datumList
-                        for (int i = 0; i < datum.size(); i++) {
-                            List<Datum> datumList1 = datum.get(i);
-                            datumList.addAll(datumList1);
-                        }
-                        adapter.setLinkList(linkList);
-                        adapter.setDatumList(datumList);
-
-                        imageClickListener();
+                        callToGetAllDataFromLists(objectCollection);
                     }
                 });
         compositeDisposable.add(disposable);
     }
 
-    void loadMarsData() {
-        compositeDisposable = new CompositeDisposable();
+    private void loadMarsData() {
         NetworkService service = NetworkService.getInstance();
         final NetworkApi api = service.getAllApi();
         Disposable disposable = api.getAllMarsCollection()
@@ -142,35 +124,39 @@ public class MainActivity extends AppCompatActivity {
                     if (throwable != null) {
                         Toast.makeText(MainActivity.this, "Data loading error " + throwable, Toast.LENGTH_SHORT).show();
                     } else {
-                        //Get All lists
-                        List<List<Link>> link = new ArrayList<>();
-                        List<List<Datum>> datum = new ArrayList<>();
-                        List<Link> linkList = new ArrayList<>();
-                        List<Datum> datumList = new ArrayList<>();
-                        List<Item> items = objectCollection.getCollection().getItems();
-
-                        //Fill link and datum lists data from item list
-                        for (int i = 0; i < items.size(); i++) {
-                            link.add(objectCollection.getCollection().getItems().get(i).getLinks());
-                            datum.add(objectCollection.getCollection().getItems().get(i).getData());
-                        }
-                        //Get and add all dates to linkList
-                        for (int i = 0; i < link.size(); i++) {
-                            List<Link> links = link.get(i);
-                            linkList.addAll(links);
-                        }
-                        //Get and add all dates to datumList
-                        for (int i = 0; i < datum.size(); i++) {
-                            List<Datum> datumList1 = datum.get(i);
-                            datumList.addAll(datumList1);
-                        }
-                        adapter.setLinkList(linkList);
-                        adapter.setDatumList(datumList);
-
-                        imageClickListener();
+                        callToGetAllDataFromLists(objectCollection);
                     }
                 });
         compositeDisposable.add(disposable);
+    }
+
+    private void callToGetAllDataFromLists(ObjectCollection objectCollection) {
+        //Get All lists
+        List<List<Link>> link = new ArrayList<>();
+        List<List<Datum>> datum = new ArrayList<>();
+        List<Link> linkList = new ArrayList<>();
+        List<Datum> datumList = new ArrayList<>();
+        List<Item> items = objectCollection.getCollection().getItems();
+
+        //Fill link and datum lists data from item list
+        for (int i = 0; i < items.size(); i++) {
+            link.add(objectCollection.getCollection().getItems().get(i).getLinks());
+            datum.add(objectCollection.getCollection().getItems().get(i).getData());
+        }
+        //Get and add all dates to linkList
+        for (int i = 0; i < link.size(); i++) {
+            List<Link> links = link.get(i);
+            linkList.addAll(links);
+        }
+        //Get and add all dates to datumList
+        for (int i = 0; i < datum.size(); i++) {
+            List<Datum> datumListOfAllDates = datum.get(i);
+            datumList.addAll(datumListOfAllDates);
+        }
+        adapter.setLinkList(linkList);
+        adapter.setDatumList(datumList);
+
+        setImageClickListener();
     }
 
     @Override

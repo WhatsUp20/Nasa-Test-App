@@ -12,6 +12,10 @@ import com.squareup.picasso.Picasso;
 
 public class NasaDetailActivity extends AppCompatActivity {
 
+    public static final String EXTRA_IMAGE = "image";
+    public static final String EXTRA_TITLE = "title";
+    public static final String EXTRA_DESCRIPTION = "desc";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,10 +25,10 @@ public class NasaDetailActivity extends AppCompatActivity {
         TextView textViewTitle = findViewById(R.id.textViewTitle);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("image") && intent.hasExtra("title") && intent.hasExtra("desc")) {
-            String image = intent.getStringExtra("image");
-            String title = intent.getStringExtra("title");
-            String desc = intent.getStringExtra("desc");
+        if (intent != null && intent.hasExtra(EXTRA_IMAGE) && intent.hasExtra(EXTRA_TITLE) && intent.hasExtra(EXTRA_DESCRIPTION)) {
+            String image = intent.getStringExtra(EXTRA_IMAGE);
+            String title = intent.getStringExtra(EXTRA_TITLE);
+            String desc = intent.getStringExtra(EXTRA_DESCRIPTION);
             Picasso.get().load(image).into(imageViewToDetails);
             textViewTitle.setText(title);
             textViewDescription.setText(desc);

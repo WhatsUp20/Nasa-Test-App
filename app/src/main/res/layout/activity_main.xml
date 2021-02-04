@@ -8,7 +8,7 @@
     android:background="@color/colorPrimaryDark"
     tools:ignore="UseSwitchCompatOrMaterialXml">
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchNasa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_view_space"
-        android:onClick="setSpace"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/switchNasa"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_view_mars"
-        android:onClick="setMars"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/switchNasa"
