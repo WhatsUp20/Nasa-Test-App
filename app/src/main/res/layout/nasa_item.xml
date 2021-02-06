@@ -4,6 +4,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/images_from_nasa">
+
+    </ImageView>
+
     <TextView
         android:id="@+id/descriptionToDetail"
         android:visibility="invisible"
@@ -16,13 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/images_from_nasa">
 
-</ImageView>
 
     </androidx.cardview.widget.CardView>

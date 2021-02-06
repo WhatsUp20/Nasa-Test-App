@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".screens.NasaDetailActivity"></activity>
-        <activity android:name=".screens.nasa_news.MainActivity">
+        <activity android:name=".screens.nasa_news.NasaNewsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

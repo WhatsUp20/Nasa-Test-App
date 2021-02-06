@@ -16,15 +16,16 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class NasaPresenter {
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private NasaContract view;
+    private NasaContract contract;
 
-    public NasaPresenter(NasaContract view) {
-        this.view = view;
+    public NasaPresenter(NasaContract contract) {
+        this.contract = contract;
     }
 
     public void loadSpaceData() {
@@ -34,13 +35,16 @@ public class NasaPresenter {
         Disposable disposable = api.getAllSpaceCollections()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable1 -> view.showProgressBar())
-                .doFinally(() -> view.notShowProgressBar())
-                .subscribe((objectCollection, throwable) -> {
-                    if (throwable != null) {
-                        Toast.makeText((Context) view, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        callToGetAllDataFromLists(objectCollection);
+                .doOnSubscribe(disposable1 -> contract.showProgressBar())
+                .doFinally(() -> contract.notShowProgressBar())
+                .subscribe(new BiConsumer<ObjectCollection, Throwable>() {
+                    @Override
+                    public void accept(ObjectCollection objectCollection, Throwable throwable) throws Exception {
+                        if (throwable != null) {
+                            Toast.makeText((Context) contract, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            NasaPresenter.this.callToGetAllDataFromLists(objectCollection);
+                        }
                     }
                 });
         compositeDisposable.add(disposable);
@@ -52,11 +56,11 @@ public class NasaPresenter {
         Disposable disposable = api.getAllMarsCollection()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable1 -> view.showProgressBar())
-                .doFinally(() -> view.notShowProgressBar())
+                .doOnSubscribe(disposable1 -> contract.showProgressBar())
+                .doFinally(() -> contract.notShowProgressBar())
                 .subscribe((objectCollection, throwable) -> {
                     if (throwable != null) {
-                        Toast.makeText((Context) view, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText((Context) contract, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
                         callToGetAllDataFromLists(objectCollection);
                     }
@@ -87,8 +91,8 @@ public class NasaPresenter {
             List<Datum> datumListOfAllDates = datum.get(i);
             datumList.addAll(datumListOfAllDates);
 
-            view.showDatumDataFromPresenter(datumList);
-            view.showListDataFromPresenter(linkList);
+            contract.showDatumDataFromPresenter(datumList);
+            contract.showListDataFromPresenter(linkList);
         }
     }
 

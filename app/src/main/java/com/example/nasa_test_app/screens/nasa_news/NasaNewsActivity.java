@@ -23,7 +23,7 @@ import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_DESCRIP
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_IMAGE;
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_TITLE;
 
-public class MainActivity extends AppCompatActivity implements NasaContract {
+public class NasaNewsActivity extends AppCompatActivity implements NasaContract {
 
     private TextView textViewSpaceNews;
     private TextView textViewMarsNews;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NasaContract {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.nasa_news_activity);
         init();
 
         switchNasa.setChecked(true);
@@ -71,22 +71,22 @@ public class MainActivity extends AppCompatActivity implements NasaContract {
         adapter.setOnImageClickListener(position -> {
             Link link1 = adapter.getLinkList().get(position);
             Datum datum1 = adapter.getDatumList().get(position);
-            Intent intent = new Intent(MainActivity.this, NasaDetailActivity.class);
+            Intent intent = new Intent(NasaNewsActivity.this, NasaDetailActivity.class);
             intent.putExtra(EXTRA_IMAGE, link1.getHref());
             intent.putExtra(EXTRA_TITLE, datum1.getTitle());
             intent.putExtra(EXTRA_DESCRIPTION, datum1.getDescription());
-            MainActivity.this.startActivity(intent);
+            NasaNewsActivity.this.startActivity(intent);
         });
     }
 
     private void init() {
-        textViewSpaceNews = findViewById(R.id.textViewSpace);
-        textViewMarsNews = findViewById(R.id.textViewMars);
+        textViewSpaceNews = findViewById(R.id.textViewSpaceNews);
+        textViewMarsNews = findViewById(R.id.textViewMarsNews);
         switchNasa = findViewById(R.id.switchNasa);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         progressBarLoading = findViewById(R.id.progressBarLoading);
-        adapter = new NasaAdapter();
         presenter = new NasaPresenter(this);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        adapter = new NasaAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
