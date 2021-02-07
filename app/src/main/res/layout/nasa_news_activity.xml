@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:text="@string/text_view_space"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/switchNasa"
+        app:layout_constraintEnd_toStartOf="@id/switchNasa"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/switchNasa" />
 

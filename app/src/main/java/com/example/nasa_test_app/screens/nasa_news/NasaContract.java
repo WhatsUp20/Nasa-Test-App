@@ -9,5 +9,5 @@ public interface NasaContract {
     void showDatumDataFromPresenter(List<Datum> datumList);
     void showListDataFromPresenter(List<Link> linkList);
     void showProgressBar();
-    void notShowProgressBar();
+    void noShowProgressBar();
 }

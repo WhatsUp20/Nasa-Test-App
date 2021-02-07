@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiConsumer;
+
 import io.reactivex.schedulers.Schedulers;
 
 public class NasaPresenter {
@@ -35,16 +35,15 @@ public class NasaPresenter {
         Disposable disposable = api.getAllSpaceCollections()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable1 -> contract.showProgressBar())
-                .doFinally(() -> contract.notShowProgressBar())
-                .subscribe(new BiConsumer<ObjectCollection, Throwable>() {
-                    @Override
-                    public void accept(ObjectCollection objectCollection, Throwable throwable) throws Exception {
-                        if (throwable != null) {
-                            Toast.makeText((Context) contract, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            NasaPresenter.this.callToGetAllDataFromLists(objectCollection);
-                        }
+                .doOnSubscribe((Disposable disposable1) -> {
+                    contract.showProgressBar();
+                })
+                .doFinally(() -> contract.noShowProgressBar())
+                .subscribe((objectCollection, throwable) -> {
+                    if (throwable != null) {
+                        Toast.makeText((Context) contract, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        NasaPresenter.this.callToGetAllDataFromLists(objectCollection);
                     }
                 });
         compositeDisposable.add(disposable);
@@ -57,7 +56,7 @@ public class NasaPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable1 -> contract.showProgressBar())
-                .doFinally(() -> contract.notShowProgressBar())
+                .doFinally(() -> contract.noShowProgressBar())
                 .subscribe((objectCollection, throwable) -> {
                     if (throwable != null) {
                         Toast.makeText((Context) contract, "Error load data: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
@@ -81,11 +80,13 @@ public class NasaPresenter {
             link.add(objectCollection.getCollection().getItems().get(i).getLinks());
             datum.add(objectCollection.getCollection().getItems().get(i).getData());
         }
+
         //Get and add all dates to linkList
         for (int i = 0; i < link.size(); i++) {
-            List<Link> links = link.get(i);
-            linkList.addAll(links);
+            List<Link> linkListOfAllDates = link.get(i);
+            linkList.addAll(linkListOfAllDates);
         }
+
         //Get and add all dates to datumList
         for (int i = 0; i < datum.size(); i++) {
             List<Datum> datumListOfAllDates = datum.get(i);

@@ -2,12 +2,16 @@ package com.example.nasa_test_app.screens.nasa_news;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,7 +27,7 @@ import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_DESCRIP
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_IMAGE;
 import static com.example.nasa_test_app.screens.NasaDetailActivity.EXTRA_TITLE;
 
-public class NasaNewsActivity extends AppCompatActivity implements NasaContract {
+public class NasaNewsActivity extends AppCompatActivity implements NasaContract{
 
     private TextView textViewSpaceNews;
     private TextView textViewMarsNews;
@@ -36,10 +40,11 @@ public class NasaNewsActivity extends AppCompatActivity implements NasaContract 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nasa_news_activity);
+
         init();
 
         switchNasa.setChecked(true);
-        switchNasa.setOnCheckedChangeListener((buttonView, isChecked) -> updateSwitchState(isChecked));
+        switchNasa.setOnCheckedChangeListener((buttonView, isChecked) -> NasaNewsActivity.this.updateSwitchState(isChecked));
         switchNasa.setChecked(false);
 
         textViewMarsNews.setOnClickListener(v -> {
@@ -107,12 +112,12 @@ public class NasaNewsActivity extends AppCompatActivity implements NasaContract 
     }
 
     @Override
-    public void notShowProgressBar() {
+    public void noShowProgressBar() {
         progressBarLoading.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         presenter.disposeDisposable();
         super.onDestroy();
     }

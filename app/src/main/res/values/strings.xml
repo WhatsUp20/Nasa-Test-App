@@ -6,4 +6,6 @@
     <string name="text_view_description">textViewDescription</string>
     <string name="text_view_title">textViewTitle</string>
     <string name="nasa_image">NasaImage</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -83,7 +83,7 @@ public class NasaAdapter extends RecyclerView.Adapter<NasaAdapter.NasaViewHolder
             textViewTitle = itemView.findViewById(R.id.titleToDetail);
             textViewDescription = itemView.findViewById(R.id.descriptionToDetail);
 
-            itemView.setOnClickListener(v -> {
+            itemView.setOnClickListener((View v) -> {
                 if (onImageClickListener != null) {
                     onImageClickListener.onImageClick(getAdapterPosition());
                 }
